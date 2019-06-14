@@ -14,6 +14,10 @@ export class CarouselConfig {
   /** Show carousel-indicators */
   showIndicators = true;
 
+  /** Slides can be paused on focus
+   * @internal
+   */
+  pauseOnFocus = true;
   /* If `true` - carousel indicators indicate slides chunks
      works ONLY if singleSlideOffset = FALSE */
   indicatorsByChunk = false;

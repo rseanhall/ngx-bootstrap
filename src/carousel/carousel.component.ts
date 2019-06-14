@@ -46,6 +46,8 @@ export class CarouselComponent implements AfterViewInit, OnDestroy {
   @Input() noPause: boolean;
   /*  If `true` — carousel-indicators are visible  */
   @Input() showIndicators: boolean;
+  /**  If `true` - autoplay will be stopped on focus */
+  @Input() pauseOnFocus: boolean;
   /* If `true` - carousel indicators indicate slides chunks
      works ONLY if singleSlideOffset = FALSE */
   @Input() indicatorsByChunk = false;
@@ -252,6 +254,73 @@ export class CarouselComponent implements AfterViewInit, OnDestroy {
       this.activeSlide = this.findNextSlideIndex(direction, force);
     } else {
       this.moveMultilist(direction);
+    }
+  }
+
+  /**
+   * Swith slides by enter, space and arrows keys
+   * @internal
+   */
+  keydownPress(event: KeyboardEvent) {
+    // tslint:disable-next-line:deprecation
+    switch (event.keyCode) {
+      case 13:
+      case 32:
+        this.nextSlide();
+        event.preventDefault();
+        break;
+      case 37:
+        this.previousSlide();
+        break;
+      case 39:
+        this.nextSlide();
+        break;
+      default:
+        return;
+    }
+  }
+
+  /**
+   * Swith to prev slide by enter key
+   * @internal
+   */
+  prevKey(event: KeyboardEvent) {
+    /* tslint:disable-next-line: deprecation */
+    if (event.keyCode === 13 || event.key === 'Enter') {
+      this.previousSlide();
+    }
+  }
+
+  /**
+   * Swith to next slide by enter key
+   * @internal
+   */
+  nextKey(event: KeyboardEvent) {
+    /* tslint:disable-next-line: deprecation */
+    if (event.keyCode === 13 || event.key === 'Enter') {
+      this.nextSlide();
+    }
+  }
+
+  /**
+   * When slides on focus autoplay is stopped(optional)
+   * @internal
+   */
+  pauseFocusIn() {
+    if (this.pauseOnFocus) {
+      this.isPlaying = false;
+      this.resetTimer();
+    }
+  }
+
+  /**
+   * When slides out of focus autoplay is started
+   * @internal
+   */
+  pauseFocusOut() {
+    if (!this.isPlaying) {
+      this.isPlaying = true;
+      this.restartTimer();
     }
   }
 
